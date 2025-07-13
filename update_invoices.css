@@ -1,0 +1,60 @@
+.table-hover.table-bordered.table-striped {
+    background-color: #f8f9fa;
+    font-size: 13px;
+}
+
+.btn-primary.btn-sm {
+    background-color: #007BFF;
+    border-color: #007BFF;
+}
+
+    .btn-primary.btn-sm:hover {
+        background-color: #0056b3;
+    }
+
+input.form-control-sm {
+    border: 1px solid #ced4da;
+}
+
+input:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.table-responsive th,
+.table-responsive td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+    nav a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        nav a.active {
+            background-color: #007BFF;
+            color: white;
+        }
+
+.select2-container {
+    width: 100% !important;
+}
+
+

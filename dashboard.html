@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="my-4">Dashboard</h2>
+
+<!-- Flash messages & Filters code as it is -->
+<!-- Invoices Table -->
+<div class="table-responsive">
+    <form method="GET" action="{{ url_for('dashboard') }}" id="filter-form" class="row mb-4">
+        <div class="col-md-6">
+            <input type="text" name="customer_name" class="form-control" placeholder="Customer Name" value="{{ customer_name }}" onchange="this.form.submit();">
+        </div>
+        <div class="col-md-6">
+            <select name="payment_term" class="form-select" onchange="this.form.submit();">
+                <option value="">All Payment Terms</option>
+                {% for term in unique_payment_terms %}
+                <option value="{{ term[0] }}" {% if payment_term_filter==term[0] %}selected{% endif %}>{{ term[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-12 mt-2">
+            <button type="button" class="btn btn-secondary w-100" onclick="clearFilters()">Clear Filters</button>
+        </div>
+    </form>
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>NO</th>
+                <th>Customer Name</th>
+                <th>Payment Term</th>
+                <th>Balance</th>
+                <th>Supervisor</th>
+                <th>Invoice Status</th>
+                <th>Comment</th>
+                <th>Evidence</th>
+                <th>Expected or Paid Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if invoices %}
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.id }}</td>
+                <td>{{ invoice.customer_name }}</td>
+                <td>{{ invoice.payment_term }}</td>
+                <td>{{ "{:,.2f}".format(invoice.balance) }}</td>
+                <td>{{ invoice.supervisor }}</td>
+                <td>{{ invoice.invoice_status }}</td>
+                <td>{{ invoice.comment }}</td>
+                <td>{{ invoice.evidence }}</td>
+                <td>{{ invoice.expected_paid_day.strftime('%Y-%m-%d') if invoice.expected_paid_day else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No invoices found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if invoices.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ invoices.prev_num }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for page_num in invoices.iter_pages() %}
+            <li class="page-item {% if page_num == invoices.page %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if invoices.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ invoices.next_num }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<script>
+    function clearFilters() {
+        const form = document.getElementById('filter-form');
+        form.reset();
+        form.querySelectorAll('input, select').forEach(field => field.value = '');
+        form.submit();
+    }
+</script>
+
+{% endblock %}

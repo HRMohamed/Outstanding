@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<h2 class="my-4">Manage Users</h2>
+
+
+<form method="POST">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Supervisor</th>
+                <th>Assigned Supervisors</th>  <!-- New column for displaying assigned supervisors -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            {% if user.role != 'admin' %}  <!-- Check if the user's role is not 'admin' -->
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>
+                    <select name="role_{{ user.id }}" class="form-select">
+                        <option value="user" {% if user.role=='user' %}selected{% endif %}>User</option>
+                        <option value="Manager" {% if user.role=='Manager' %}selected{% endif %}>Manager</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="supervisor_{{ user.id }}[]" class="form-select" multiple>
+                        <option value="">None</option>
+                        {% set user_supervisor_ids = [] %}
+
+                        {% for supervisor in user.supervisors %}
+                        {% if supervisor.id not in user_supervisor_ids %}
+                        {% set user_supervisor_ids = user_supervisor_ids + [supervisor.id] %}
+                        {% endif %}
+                        {% endfor %}
+
+                        {% for supervisor in supervisor_names %}
+                        <option value="{{ supervisor.id }}"
+                                {% if supervisor.id in user_supervisor_ids %} selected {% endif %}>
+                            {{ supervisor.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    {% if user.supervisors %}
+                    {% for supervisor in user.supervisors %}
+                    {{ supervisor.name }}{% if not loop.last %}, {% endif %}  <!-- Display all assigned supervisor names -->
+                    {% endfor %}
+                    {% else %}
+                    None  <!-- If no supervisors assigned, display 'None' -->
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+</form>
+
+{% endblock %}

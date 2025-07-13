@@ -1,0 +1,30 @@
+nav {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+}
+
+    nav a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        nav a.active {
+            background-color: #007BFF;
+            color: white;
+        }
+.select2-container {
+    width: 100% !important; 
+}
+
+

@@ -1,0 +1,71 @@
+
+
+{% extends 'base.html' %}
+{% block title %}Update Invoices{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/update_invoices.css">
+<script src="/static/js/update_invoices.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<h2 class="my-4 text-center">Update Invoice Status</h2>
+
+<div class="container-fluid">
+    <form method="POST" onsubmit="return validateForm();">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped align-middle text-center" style="font-size: 14px; width: 100%;">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 15%;">Customer Name</th>
+                        <th style="width: 10%;">Payment Term</th>
+                        <th style="width: 10%;">Current Status</th>
+                        <th style="width: 10%;">Balance</th>
+                        <th style="width: 10%;">New Status</th>
+                        <th style="width: 10%;">Paid Amount</th>
+                        <th style="width: 10%;">Remaining Amount</th>
+                        <th style="width: 10%;">Payment Date</th>
+                        <th style="width: 10%;">Expected Payment Date</th>
+                        <th style="width: 5%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.id }}</td>
+                        <td>{{ invoice.customer_name }}</td>
+                        <td>{{ invoice.payment_term }}</td>
+                        <td>{{ invoice.invoice_status or 'N/A' }}</td>
+                        <td>{{ "{:,.2f}".format(invoice.balance) }}</td>
+                        <td>
+                            <select name="invoice_status" class="form-select form-control-sm" id="status-{{ invoice.id }}" onchange="toggleFields(this, {{ invoice.id }}, {{ invoice.balance or 0 }})">
+                                <option value="" disabled hidden selected>Select the Status</option>
+                                <option value="Unpaid">Unpaid</option>
+                                <option value="Partial Payment">Partial Payment</option>
+                                <option value="Paid">Paid</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="paid_amount" class="form-control form-control-sm" id="paid-amount-{{ invoice.id }}" placeholder="Amount" oninput="calculateRemaining(this, {{ invoice.id }}, {{ invoice.balance or 0 }})" disabled>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm" id="remaining-amount-{{ invoice.id }}" placeholder="Remaining" disabled>
+                        </td>
+                        <td>
+                            <input type="date" name="payment_date" class="form-control form-control-sm" id="payment-date-{{ invoice.id }}" disabled>
+                        </td>
+                        <td>
+                            <input type="date" name="expected_date" class="form-control form-control-sm" id="expected-date-{{ invoice.id }}" disabled>
+                        </td>
+                        <td>
+                            <button type="submit" name="invoice_id" value="{{ invoice.id }}" class="btn btn-primary btn-sm" id="update-btn-{{ invoice.id }}">Update</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
